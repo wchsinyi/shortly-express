@@ -26,25 +26,45 @@ app.post('/signup',
 (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
-  var newUser = models.Users;
-  var check = function(cb){
-  }
-  newUser.getAll(undefined, (err, outcome)=>{
-    console.log(JSON.stringify(outcome[0]));
-    for (let p in outcome){
-      console.log(outcome[p]);
-    }
-  });
-  // newUser.create({username: username, password:password});
+  models.Users.get({username:username}).then(
+    data => {
+      if (data===undefined){
+        models.Users.create({username: username, password:password});
+        res.header({location:'/'});
+        res.end();
+      } else{
+        res.header({location:'/signup'});
+        res.end();
 
-  res.render('signup');
-
+      }
+    } 
+  );
 });
 app.get('/login', 
 (req, res) => {
-  console.log(req.params);
+  // var username = req.body.username;
+  // var pwAttempted = req.body.password;
+  // models.Users.get({username:username}).then(
+  //   data => {
+  //     if (data===undefined){
+  //       models.Users.create({username: username, password:password});
+  //       res.header({location:'/login'});
+  //     } else{
+  //       console.log(data[0])
+  //       if ( models.Users.compare(pwAttempted, data[0].password, data[0].salt)){
+  //         console.log('Welcome')
+  //         res.header({location:'/'});
+  //       } else{
+  //         console.log('Imposter! ')
+  //         res.header({location:'/login'});
+  //       }
+  //     }
+  //     res.end();
+  //   } 
+  // );
   res.render('login');
 });
+
 app.get('/', 
 (req, res) => {
   console.log(req.params);
