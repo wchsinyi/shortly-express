@@ -16,9 +16,38 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 
+app.get('/signup', 
+(req, res) => {
+  console.log(req.params);
+  res.render('signup');
+});
 
+app.post('/signup', 
+(req, res) => {
+  var username = req.body.username;
+  var password = req.body.password;
+  var newUser = models.Users;
+  var check = function(cb){
+  }
+  newUser.getAll(undefined, (err, outcome)=>{
+    console.log(JSON.stringify(outcome[0]));
+    for (let p in outcome){
+      console.log(outcome[p]);
+    }
+  });
+  // newUser.create({username: username, password:password});
+
+  res.render('signup');
+
+});
+app.get('/login', 
+(req, res) => {
+  console.log(req.params);
+  res.render('login');
+});
 app.get('/', 
 (req, res) => {
+  console.log(req.params);
   res.render('index');
 });
 
@@ -40,6 +69,8 @@ app.get('/links',
 
 app.post('/links', 
 (req, res, next) => {
+  console.log(req.body)
+  console.log("whats up yo")
   var url = req.body.url;
   if (!models.Links.isValidUrl(url)) {
     // send back a 404 if link is not valid
