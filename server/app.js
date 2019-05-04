@@ -31,9 +31,11 @@ app.post('/signup',
       if (data===undefined){
         models.Users.create({username: username, password:password});
         res.header({location:'/'});
+        res.render('index');
         res.end();
       } else{
         res.header({location:'/signup'});
+        res.render('signup');
         res.end();
 
       }
@@ -42,28 +44,34 @@ app.post('/signup',
 });
 app.get('/login', 
 (req, res) => {
-  // var username = req.body.username;
-  // var pwAttempted = req.body.password;
-  // models.Users.get({username:username}).then(
-  //   data => {
-  //     if (data===undefined){
-  //       models.Users.create({username: username, password:password});
-  //       res.header({location:'/login'});
-  //     } else{
-  //       console.log(data[0])
-  //       if ( models.Users.compare(pwAttempted, data[0].password, data[0].salt)){
-  //         console.log('Welcome')
-  //         res.header({location:'/'});
-  //       } else{
-  //         console.log('Imposter! ')
-  //         res.header({location:'/login'});
-  //       }
-  //     }
-  //     res.end();
-  //   } 
-  // );
   res.render('login');
 });
+
+app.post('/login',
+(req, res) => {
+  var username = req.body.username;
+  var pwAttempted = req.body.password;
+  models.Users.get({username:username}).then(
+    data => {
+      if (data===undefined){
+        res.header({location:'/login'});
+      } else{
+        console.log('here is my data', data.password)
+        if ( models.Users.compare(pwAttempted, data.password, data.salt)){
+          console.log('Welcome')
+          res.header({location:'/'});
+          res.render('index');
+        } else{
+          console.log('Imposter! ')
+          res.header({location:'/login'});
+          res.render('login');
+        }
+      }
+      res.end();
+    } 
+  );
+});
+
 
 app.get('/', 
 (req, res) => {
