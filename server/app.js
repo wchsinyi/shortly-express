@@ -56,19 +56,23 @@ app.post('/login',
       if (data===undefined){
         res.header({location:'/login'});
       } else{
-        console.log('here is my data', data.password)
         if ( models.Users.compare(pwAttempted, data.password, data.salt)){
-          console.log('Welcome')
           res.header({location:'/'});
           res.render('index');
         } else{
-          console.log('Imposter! ')
           res.header({location:'/login'});
           res.render('login');
         }
       }
       res.end();
+      return {req, res};
     } 
+  ).then( ({req, res})=>{
+    // console.log('req', req);
+    // console.log(username)
+    req.body.username = username;
+    Auth.createSession(req, res, ()=>{});
+    }
   );
 });
 
